@@ -4,6 +4,7 @@ import { Todo } from './schemas/todo.schema';
 import { Model } from 'mongoose';
 import { CreateTodoDto } from './dto/create-todo.dto';
 import { NotFoundException } from '@nestjs/common';
+import { UpdateTodoDto } from './dto/update-todo.dto';
 
 @Injectable()
 export class TodosService {
@@ -16,15 +17,28 @@ export class TodosService {
     return this.todoModel.create(dto);
   }
 
-  async findAll(){
+  async findAll() {
     return this.todoModel.find();
   }
 
-  async findOne(id: String){
+  async findOne(id: String) {
     const todo = await this.todoModel.findById(id);
 
-    if(!todo){
-      throw new NotFoundException("Todo Not Found");
+    if (!todo) {
+      throw new NotFoundException('Todo Not Found');
+    }
+
+    return todo;
+  }
+
+  async update(id: string, dto: UpdateTodoDto) {
+    const todo = await this.todoModel.findByIdAndUpdate(id, dto, {
+      new: true,
+      runValidators: true,
+    });
+
+    if (!todo) {
+      throw new NotFoundException('Todo not found');
     }
 
     return todo;
