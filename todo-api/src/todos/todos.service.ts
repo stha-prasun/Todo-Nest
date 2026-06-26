@@ -31,7 +31,7 @@ export class TodosService {
     return todo;
   }
 
-  async update(id: string, dto: UpdateTodoDto) {
+  async update(id: String, dto: UpdateTodoDto) {
     const todo = await this.todoModel.findByIdAndUpdate(id, dto, {
       new: true,
       runValidators: true,
@@ -42,5 +42,17 @@ export class TodosService {
     }
 
     return todo;
+  }
+
+  async delete(id: String) {
+    const todo = await this.todoModel.findByIdAndDelete(id);
+
+    if (!todo) {
+      throw new NotFoundException('Todo Not Found');
+    }
+
+    return {
+      message: 'Todo deleted successfully',
+    };
   }
 }
